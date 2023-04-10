@@ -10,11 +10,13 @@ namespace InMemoryCaching.Controllers
     {
         private readonly IMemoryCache _cache;
         private readonly ILogger<CacheController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public CacheController(ILogger<CacheController> logger, IMemoryCache cache)
+        public CacheController(ILogger<CacheController> logger, IMemoryCache cache, IConfiguration configuration)
         {
             _logger = logger;
             _cache = cache;
+            _configuration = configuration;
         }
 
         [HttpGet("{key}")]
@@ -33,10 +35,10 @@ namespace InMemoryCaching.Controllers
         {
             MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(2),
-                Priority = CacheItemPriority.High,
-                Size = 1024,
-                SlidingExpiration = TimeSpan.FromMinutes(2),
+                AbsoluteExpiration = DateTime.Now.AddMinutes(_configuration.GetValue<double>("CacheExpiryOption:AbsoluteExpiration")),
+                Priority = (CacheItemPriority) Convert.ToInt32(_configuration["CacheExpiryOption:CacheItemPriority"]),
+                Size = Convert.ToInt32(_configuration["CacheExpiryOption:Size"]),
+                SlidingExpiration = TimeSpan.FromMinutes(Convert.ToDouble(_configuration["CacheExpiryOption:SlidingExpiration"])),
             };
             _cache.Set(requestModel.key, requestModel.value, cacheExpiryOptions);
             return Ok();
