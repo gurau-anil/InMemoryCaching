@@ -36,7 +36,7 @@ namespace InMemoryCaching.Controllers
             MemoryCacheEntryOptions cacheExpiryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(_configuration.GetValue<double>("CacheExpiryOption:AbsoluteExpiration")),
-                Priority = (CacheItemPriority) Convert.ToInt32(_configuration["CacheExpiryOption:CacheItemPriority"]),
+                Priority = (CacheItemPriority) Convert.ToInt32(_configuration["CacheExpiryOption:Priority"]),
                 Size = Convert.ToInt32(_configuration["CacheExpiryOption:Size"]),
                 SlidingExpiration = TimeSpan.FromMinutes(Convert.ToDouble(_configuration["CacheExpiryOption:SlidingExpiration"])),
             };
